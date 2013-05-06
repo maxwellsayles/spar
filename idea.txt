@@ -1,0 +1,17 @@
+You should use all the same optimized ideal arithmetic and
+exponentiation methods, including precomputations where appropriate, for
+both algorithms.  Performance of ideal arithmetic and exponentiation is
+compared elsewhere in your thesis - here, you want to focus the
+comparison on the algorithmic improvements to the factoring algorithm
+itself with all other components being equal, in order to demonstrate
+that these changes themselves yield practical improvements.  So, you
+want to compare the basic SPAR (Pollard for search, theoretically
+optimal choice of exponent and search length) vs. the improved version
+(bounded primorial steps for search, empirically optimized choices of
+exponent and bounds, any other tweaks you've made to the SPAR algorithm
+itself).
+
+This fits with the same general theme I've been saying - you should
+present evidence that every new idea / optimization you incorporate has
+a positive effect by itself.  What I've written above will help you do
+that at the level of the factoring algorithm.

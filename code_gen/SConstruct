@@ -1,0 +1,23 @@
+import os
+
+ccflags = ['-O3', '-Wall', '-Werror', '-DNDEBUG']
+
+libs = ['m']
+sources = []
+
+if os.path.isfile('/usr/local/lib/libgmp.a'):
+   sources.append('/usr/local/lib/libgmp.a')
+elif os.path.isfile('/usr/lib/libgmp.a'):
+   sources.append('/usr/lib/libgmp.a')
+else:
+   libs.append('gmp')
+
+Program(target='primorial_gen',
+        source=['primorial_gen.c',
+                '/home/max/github/libqform/libqform.a',
+                '/home/max/github/liboptarith/liboptarith.a'] +
+               sources,
+        CCFLAGS=ccflags,
+        CPPPATH=['../..'],
+        LIBS=libs)
+
