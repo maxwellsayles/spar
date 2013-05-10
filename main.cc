@@ -9,7 +9,8 @@ using namespace std;
 int main(int argc, char** argv) {
   mpz_t N;
   mpz_t d;
-  mpz_init_set_str(N, "4722366490463147393501", 10);
+  //  mpz_init_set_str(N, "4722366490463147393501", 10);
+  mpz_init_set_str(N, "4722366490463147392334297", 10);
   mpz_init(d);
 
   Spar spar;

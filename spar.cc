@@ -34,7 +34,6 @@ Spar::Spar() {
   mpz_init(this->N);
   mpz_init(this->d);
   mpz_init(this->D);
-  mpz_init(this->t);
 
   // Initialize groups.
   s64_qform_group_init(&this->qform_group_s64);
@@ -42,6 +41,9 @@ Spar::Spar() {
   s64_qform_init(&this->qform_group_s64, &this->search_s64);
   s64_qform_init(&this->qform_group_s64, &this->current_s64);
   s64_qform_init(&this->qform_group_s64, &this->temp_form_s64);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    s64_qform_init(&this->qform_group_s64, &this->random_forms_s64[i]);
+  }
   group_pow_init(&this->pow_s64, &this->qform_group_s64.desc.group);
 
   s128_qform_group_init(&this->qform_group_s128);
@@ -49,6 +51,9 @@ Spar::Spar() {
   s128_qform_init(&this->qform_group_s128, &this->search_s128);
   s128_qform_init(&this->qform_group_s128, &this->current_s128);
   s128_qform_init(&this->qform_group_s128, &this->temp_form_s128);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    s128_qform_init(&this->qform_group_s128, &this->random_forms_s128[i]);
+  }
   group_pow_init(&this->pow_s128, &this->qform_group_s128.desc.group);
 
   mpz_qform_group_init(&this->qform_group_mpz);
@@ -56,10 +61,10 @@ Spar::Spar() {
   mpz_qform_init(&this->qform_group_mpz, &this->search_mpz);
   mpz_qform_init(&this->qform_group_mpz, &this->current_mpz);
   mpz_qform_init(&this->qform_group_mpz, &this->temp_form_mpz);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    mpz_qform_init(&this->qform_group_mpz, &this->random_forms_mpz[i]);
+  }
   group_pow_init(&this->pow_mpz, &this->qform_group_mpz.desc.group);
-    
-  // Orders.
-  this->order = 0;
     
   // Primorial.
   this->primorial_terms = nullptr;
@@ -73,6 +78,9 @@ Spar::~Spar() {
   s64_qform_clear(&this->qform_group_s64, &this->search_s64);
   s64_qform_clear(&this->qform_group_s64, &this->current_s64);
   s64_qform_clear(&this->qform_group_s64, &this->temp_form_s64);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    s64_qform_clear(&this->qform_group_s64, &this->random_forms_s64[i]);
+  }
   s64_qform_group_clear(&this->qform_group_s64);
 
   group_pow_clear(&this->pow_s128);
@@ -80,6 +88,9 @@ Spar::~Spar() {
   s128_qform_clear(&this->qform_group_s128, &this->search_s128);
   s128_qform_clear(&this->qform_group_s128, &this->current_s128);
   s128_qform_clear(&this->qform_group_s128, &this->temp_form_s128);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    s128_qform_clear(&this->qform_group_s128, &this->random_forms_s128[i]);
+  }
   s128_qform_group_clear(&this->qform_group_s128);
 
   group_pow_clear(&this->pow_mpz);
@@ -87,10 +98,12 @@ Spar::~Spar() {
   mpz_qform_clear(&this->qform_group_mpz, &this->search_mpz);
   mpz_qform_clear(&this->qform_group_mpz, &this->current_mpz);
   mpz_qform_clear(&this->qform_group_mpz, &this->temp_form_mpz);
+  for (int i = 0; i < spar_random_form_count; i++) {
+    mpz_qform_clear(&this->qform_group_mpz, &this->random_forms_mpz[i]);
+  }
   mpz_qform_group_clear(&this->qform_group_mpz);
 
   mpz_clear(this->D);
-  mpz_clear(this->t);
   mpz_clear(this->d);
   mpz_clear(this->N);
 }
@@ -170,7 +183,7 @@ static int test_ambiguous_form(sspar_t* this, mpz_t d, const mpz_t N) {
  * Set all polymorphic variables and the group discriminant.
  * NOTE: Requires this->D and this->primorial_index to be set.
  */
-void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
+void Spar::setup_discriminant(const unsigned int k) {
   // Set up discriminant for this multiplier
   mpz_mul_ui(this->D, N, k);
   if ((this->D->_mp_d[0] & 3) != 3) {
@@ -187,6 +200,9 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->search               = &this->search_s64;
     this->current              = &this->current_s64;
     this->temp_form            = &this->temp_form_s64;
+    for (int i = 0; i < spar_random_form_count; i++) {
+      this->random_forms[i] = &this->random_forms_s64[i];
+    }
     this->pow                  = &this->pow_s64;
     this->primorial_terms      = this->primorial_terms_s64;
     this->primorial_term_count = this->primorial_term_count_s64;
@@ -197,6 +213,9 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->search               = &this->search_s128;
     this->current              = &this->current_s128;
     this->temp_form            = &this->temp_form_s128;
+    for (int i = 0; i < spar_random_form_count; i++) {
+      this->random_forms[i] = &this->random_forms_s128[i];
+    }
     this->pow                  = &this->pow_s128;
     this->primorial_terms      = this->primorial_terms_s128;
     this->primorial_term_count = this->primorial_term_count_s128;
@@ -207,6 +226,9 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->search               = &this->search_mpz;
     this->current              = &this->current_mpz;
     this->temp_form            = &this->temp_form_mpz;
+    for (int i = 0; i < spar_random_form_count; i++) {
+      this->random_forms[i] = &this->random_forms_mpz[i];
+    }
     this->pow                  = &this->pow_mpz;
     this->primorial_terms      = this->primorial_terms_s128;
     this->primorial_term_count = this->primorial_term_count_s128;
@@ -218,8 +240,8 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
   if (this->logh < 1) this->logh = 1;
 }
 
-void Spar::setup_exponentiation_stage(const mpz_t N, const double t) {
-  int w = prime_index_ge(t);
+void Spar::setup_exponentiation_stage() {
+  w = prime_index_ge(t);
   primorial_terms_s64 = s64_primorial_terms[w-1];
   primorial_term_count_s64 = s64_primorial_term_counts[w-1];
   primorial_terms_s128 = s128_primorial_terms[w-1];
@@ -258,6 +280,18 @@ void Spar::setup_exponentiation_stage(const mpz_t N, const double t) {
   */
 }
 
+// Pick 16 random exponents in the range [{p_t}^2, 2{p_t}^2]
+// and exponentiate search to each exponent.
+// Then perform a Pollard-Brenth random walk.
+void Spar::setup_search_stage() {
+  int pt2 = prime_list[w-1] * prime_list[w-1];
+  for (int q = 0; q < spar_random_form_count; q++) {
+    int e = (rand_u16() % pt2) + pt2;
+    qform_pow_u32(pow, random_forms[q], search, e);
+    random_exps[q] = e;
+  }
+}
+
 /// d will be non-zero if this found a factor of N
 void Spar::repeatedly_square(qform_t* form) {
   int i = 0;
@@ -276,21 +310,16 @@ void Spar::repeatedly_square(qform_t* form) {
 // The class group is determined, now we iterate on various prime ideals.
 void Spar::factor_using_group() {
   next_primeform(initform, 0);
-  cout << "initform = ";
-  group->print(group, initform);
-  cout << endl;
-  
   exponentiation_stage();
-  cout << "After exponentiation stage ";
-  group->print(group, initform);
-  cout << endl;
 
   group->set(group, search, initform);
   repeatedly_square(search);
+  if (mpz_cmp_ui(d, 0) != 0) {
+    // Found a divisor of N.
+    return;
+  }
 
-  cout << "Search = ";
-  group->print(group, search);
-  cout << endl;
+  setup_search_stage();
 }
 
 /**
@@ -304,11 +333,11 @@ bool Spar::factor(mpz_t d, const mpz_t N) {
   mpz_set(this->N, N);
   
   double Nd = mpz_get_d(N);
-  double r = sqrt(log(Nd) / log(log(Nd)));
-  double t = ::pow(Nd, 1 / (2 * r));
-  cout << setprecision(5) << fixed << "t=" << t << endl;
+  r = sqrt(log(Nd) / log(log(Nd)));
+  t = ::pow(Nd, 1 / (2 * r));
+  order = 1;
 
-  setup_exponentiation_stage(N, t);
+  setup_exponentiation_stage();
 
   for (size_t multiplier_index = 0;
        multiplier_index < square_free_count;
@@ -323,7 +352,7 @@ bool Spar::factor(mpz_t d, const mpz_t N) {
     }
 
     // Setup discriminant and members
-    setup_discriminant(N, k);
+    setup_discriminant(k);
 
     factor_using_group();
     if (mpz_cmp_ui(this->d, 0)) {
