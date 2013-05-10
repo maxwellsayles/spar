@@ -23,6 +23,8 @@ extern "C" {
 #include "libqform/qform_group.h"
 #include "libqform/s64_qform.h"
 #include "libqform/s128_qform.h"
+#include "spar/primorials/s64_theory_opt.h"
+#include "spar/primorials/s128_theory_opt.h"
 }
 
 using namespace std;
@@ -91,8 +93,6 @@ Spar::~Spar() {
   mpz_clear(this->t);
   mpz_clear(this->d);
   mpz_clear(this->N);
-
-  free(this->primorial_terms);
 }
 
 /**
@@ -188,6 +188,8 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->current              = &this->current_s64;
     this->temp_form            = &this->temp_form_s64;
     this->pow                  = &this->pow_s64;
+    this->primorial_terms      = this->primorial_terms_s64;
+    this->primorial_term_count = this->primorial_term_count_s64;
   } else if (logD <= s128_qform_group_max_bits) {
     // Use s128 implementations.
     this->qform_group          = &this->qform_group_s128.desc;
@@ -196,6 +198,8 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->current              = &this->current_s128;
     this->temp_form            = &this->temp_form_s128;
     this->pow                  = &this->pow_s128;
+    this->primorial_terms      = this->primorial_terms_s128;
+    this->primorial_term_count = this->primorial_term_count_s128;
   } else {
     // Use MPZ implementations.
     this->qform_group          = &this->qform_group_mpz.desc;
@@ -204,6 +208,8 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
     this->current              = &this->current_mpz;
     this->temp_form            = &this->temp_form_mpz;
     this->pow                  = &this->pow_mpz;
+    this->primorial_terms      = this->primorial_terms_s128;
+    this->primorial_term_count = this->primorial_term_count_s128;
   }
   this->qform_group->set_discriminant(this->qform_group, this->D);
   this->group = &this->qform_group->group;
@@ -213,7 +219,14 @@ void Spar::setup_discriminant(const mpz_t N, const unsigned int k) {
 }
 
 void Spar::setup_exponentiation_stage(const mpz_t N, const double t) {
-  // TODO: This will be precomputed, so just look it up.
+  int w = prime_index_ge(t);
+  primorial_terms_s64 = s64_primorial_terms[w-1];
+  primorial_term_count_s64 = s64_primorial_term_counts[w-1];
+  primorial_terms_s128 = s128_primorial_terms[w-1];
+  primorial_term_count_s128 = s128_primorial_term_counts[w-1];
+
+  /*
+  // This is how the precomputed reps were computed.
   const group_cost_t* costs = &mpz_qform_costs;
   int logN = mpz_sizeinbase(N, 2);
   if (logN <= s64_qform_group_max_bits) {
@@ -242,6 +255,7 @@ void Spar::setup_exponentiation_stage(const mpz_t N, const double t) {
 					       E, costs, 4);
 
   mpz_clear(E);
+  */
 }
 
 /// d will be non-zero if this found a factor of N

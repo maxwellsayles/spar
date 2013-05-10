@@ -84,9 +84,12 @@ class Spar {
   int logh;
 
   // Primorial index used for big exponentiation.
-  //  int primorial_index;
-  factored_two_three_term16_t* primorial_terms;
+  const factored_two_three_term16_t* primorial_terms;
   int primorial_term_count;
+  const factored_two_three_term16_t* primorial_terms_s64;
+  int primorial_term_count_s64;
+  const factored_two_three_term16_t* primorial_terms_s128;
+  int primorial_term_count_s128;
 
   // The number of coprime baby-steps \le step_bound not including the
   // identity.
