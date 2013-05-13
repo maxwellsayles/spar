@@ -109,6 +109,7 @@ class Spar {
   // The order of the ideal once found.
   uint32_t order;
 
+  int max_attempts;
   int logh;
 
   // Primorial index used for big exponentiation.

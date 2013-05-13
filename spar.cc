@@ -221,6 +221,13 @@ void Spar::setup_discriminant(const unsigned int k) {
 
   this->logh = (logD + 1) / 2;
   if (this->logh < 1) this->logh = 1;
+
+  // Compute the number of qforms to try.
+  static const int qform_attempts[7] = {4, 6, 8, 9, 10, 11, 12};
+  int i = (logD - 32 + 7) / 8;
+  if (i < 0) max_attempts = 3;
+  else if (i > 6) max_attempts = i * 2 - 1;
+  else max_attempts = qform_attempts[i];
 }
 
 /**
@@ -466,9 +473,9 @@ void Spar::factor_using_group() {
     }
 
     attempts++;
-    //    if (attempts > 3) {
-    //      break;
-    //    }
+    if (attempts > max_attempts) {
+      break;
+    }
   }
 }
 
@@ -492,7 +499,6 @@ bool Spar::factor(mpz_t d, const mpz_t N) {
        multiplier_index < square_free_count;
        multiplier_index++) {
     unsigned int k = square_free[multiplier_index];
-    cout << "k = " << k << endl;
 
     // Verify that k is not a divisor of N
     if ((k > 1) && (mpz_cmp_ui(N, k) != 0) && mpz_divisible_ui_p(N, k)) {
