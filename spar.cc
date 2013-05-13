@@ -85,7 +85,7 @@ Spar::Spar() {
   group_pow_init(&this->pow_mpz, &this->qform_group_mpz.desc.group);
     
   // Primorial.
-  this->primorial_terms = nullptr;
+  this->primorial_terms = 0;
   this->primorial_term_count = 0;
 }
 

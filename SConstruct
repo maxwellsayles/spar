@@ -1,5 +1,5 @@
 cflags = ['-O3', '-Wall', '-Werror']
-cxxflags = ['-O3', '-std=c++11', '-Wall', '-Werror']
+cxxflags = cflags
 
 library_sources = ['spar.cc',
                    'primorials/s64_theory_opt.c',
