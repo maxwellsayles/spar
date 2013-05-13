@@ -40,12 +40,15 @@ Spar::Spar() {
   s64_qform_init(&this->qform_group_s64, &this->initform_s64);
   s64_qform_init(&this->qform_group_s64, &this->search_s64);
   s64_qform_init(&this->qform_group_s64, &this->current_s64);
-  s64_qform_init(&this->qform_group_s64, &this->temp_form_s64);
   for (int i = 0; i < spar_random_form_count; i++) {
     s64_qform_init(&this->qform_group_s64, &this->random_forms_s64[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     s64_qform_init(&this->qform_group_s64, &this->hist_forms_s64[i]);
+  }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    s64_qform_init(&this->qform_group_s64, &this->sylow_forms_s64[i]);
+    s64_qform_init(&this->qform_group_s64, &this->ambig_forms_s64[i]);
   }
   group_pow_init(&this->pow_s64, &this->qform_group_s64.desc.group);
 
@@ -53,12 +56,15 @@ Spar::Spar() {
   s128_qform_init(&this->qform_group_s128, &this->initform_s128);
   s128_qform_init(&this->qform_group_s128, &this->search_s128);
   s128_qform_init(&this->qform_group_s128, &this->current_s128);
-  s128_qform_init(&this->qform_group_s128, &this->temp_form_s128);
   for (int i = 0; i < spar_random_form_count; i++) {
     s128_qform_init(&this->qform_group_s128, &this->random_forms_s128[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     s128_qform_init(&this->qform_group_s128, &this->hist_forms_s128[i]);
+  }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    s128_qform_init(&this->qform_group_s128, &this->sylow_forms_s128[i]);
+    s128_qform_init(&this->qform_group_s128, &this->ambig_forms_s128[i]);
   }
   group_pow_init(&this->pow_s128, &this->qform_group_s128.desc.group);
 
@@ -66,12 +72,15 @@ Spar::Spar() {
   mpz_qform_init(&this->qform_group_mpz, &this->initform_mpz);
   mpz_qform_init(&this->qform_group_mpz, &this->search_mpz);
   mpz_qform_init(&this->qform_group_mpz, &this->current_mpz);
-  mpz_qform_init(&this->qform_group_mpz, &this->temp_form_mpz);
   for (int i = 0; i < spar_random_form_count; i++) {
     mpz_qform_init(&this->qform_group_mpz, &this->random_forms_mpz[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     mpz_qform_init(&this->qform_group_mpz, &this->hist_forms_mpz[i]);
+  }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    mpz_qform_init(&this->qform_group_mpz, &this->sylow_forms_mpz[i]);
+    mpz_qform_init(&this->qform_group_mpz, &this->ambig_forms_mpz[i]);
   }
   group_pow_init(&this->pow_mpz, &this->qform_group_mpz.desc.group);
     
@@ -86,12 +95,15 @@ Spar::~Spar() {
   s64_qform_clear(&this->qform_group_s64, &this->initform_s64);
   s64_qform_clear(&this->qform_group_s64, &this->search_s64);
   s64_qform_clear(&this->qform_group_s64, &this->current_s64);
-  s64_qform_clear(&this->qform_group_s64, &this->temp_form_s64);
   for (int i = 0; i < spar_random_form_count; i++) {
     s64_qform_clear(&this->qform_group_s64, &this->random_forms_s64[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     s64_qform_clear(&this->qform_group_s64, &this->hist_forms_s64[i]);
+  }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    s64_qform_clear(&this->qform_group_s64, &this->sylow_forms_s64[i]);
+    s64_qform_clear(&this->qform_group_s64, &this->ambig_forms_s64[i]);
   }
   s64_qform_group_clear(&this->qform_group_s64);
 
@@ -99,12 +111,15 @@ Spar::~Spar() {
   s128_qform_clear(&this->qform_group_s128, &this->initform_s128);
   s128_qform_clear(&this->qform_group_s128, &this->search_s128);
   s128_qform_clear(&this->qform_group_s128, &this->current_s128);
-  s128_qform_clear(&this->qform_group_s128, &this->temp_form_s128);
   for (int i = 0; i < spar_random_form_count; i++) {
     s128_qform_clear(&this->qform_group_s128, &this->random_forms_s128[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     s128_qform_clear(&this->qform_group_s128, &this->hist_forms_s128[i]);
+  }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    s128_qform_clear(&this->qform_group_s128, &this->sylow_forms_s128[i]);
+    s128_qform_clear(&this->qform_group_s128, &this->ambig_forms_s128[i]);
   }
   s128_qform_group_clear(&this->qform_group_s128);
 
@@ -112,37 +127,21 @@ Spar::~Spar() {
   mpz_qform_clear(&this->qform_group_mpz, &this->initform_mpz);
   mpz_qform_clear(&this->qform_group_mpz, &this->search_mpz);
   mpz_qform_clear(&this->qform_group_mpz, &this->current_mpz);
-  mpz_qform_clear(&this->qform_group_mpz, &this->temp_form_mpz);
   for (int i = 0; i < spar_random_form_count; i++) {
     mpz_qform_clear(&this->qform_group_mpz, &this->random_forms_mpz[i]);
   }
   for (int i = 0; i < spar_hist_form_count; i++) {
     mpz_qform_clear(&this->qform_group_mpz, &this->hist_forms_mpz[i]);
   }
+  for (int i = 0; i < spar_sylow_form_count; i++) {
+    mpz_qform_clear(&this->qform_group_mpz, &this->sylow_forms_mpz[i]);
+    mpz_qform_clear(&this->qform_group_mpz, &this->ambig_forms_mpz[i]);
+  }
   mpz_qform_group_clear(&this->qform_group_mpz);
 
   mpz_clear(this->D);
   mpz_clear(this->d);
   mpz_clear(this->N);
-}
-
-/**
- * Find the next prime form for prime_index.
- * init_form is the set to the new form.
- */
-int Spar::next_primeform(qform_t* form, int prime_index) {
-  prime_index = qform_next_primeform(qform_group, form, prime_index);
-  assert(prime_index < static_cast<int>(prime_list_count));
-  return prime_index;
-}
-
-/**
- * Exponentiates initform by pow.
- * Result is in initform.
- */
-void Spar::exponentiation_stage() {
-  group_pow_factored23(this->pow, this->initform, this->initform,
-		       this->primorial_terms, this->primorial_term_count);
 }
 
 /**
@@ -165,12 +164,15 @@ void Spar::setup_discriminant(const unsigned int k) {
     this->initform             = &this->initform_s64;
     this->search               = &this->search_s64;
     this->current              = &this->current_s64;
-    this->temp_form            = &this->temp_form_s64;
     for (int i = 0; i < spar_random_form_count; i++) {
       this->random_forms[i] = &this->random_forms_s64[i];
     }
     for (int i = 0; i < spar_hist_form_count; i++) {
       this->hist_forms[i] = &this->hist_forms_s64[i];
+    }
+    for (int i = 0; i < spar_sylow_form_count; i++) {
+      this->sylow_forms[i] = &this->sylow_forms_s64[i];
+      this->ambig_forms[i] = &this->ambig_forms_s64[i];
     }
     this->pow                  = &this->pow_s64;
     this->primorial_terms      = this->primorial_terms_s64;
@@ -181,12 +183,15 @@ void Spar::setup_discriminant(const unsigned int k) {
     this->initform             = &this->initform_s128;
     this->search               = &this->search_s128;
     this->current              = &this->current_s128;
-    this->temp_form            = &this->temp_form_s128;
     for (int i = 0; i < spar_random_form_count; i++) {
       this->random_forms[i] = &this->random_forms_s128[i];
     }
     for (int i = 0; i < spar_hist_form_count; i++) {
       this->hist_forms[i] = &this->hist_forms_s128[i];
+    }
+    for (int i = 0; i < spar_sylow_form_count; i++) {
+      this->sylow_forms[i] = &this->sylow_forms_s128[i];
+      this->ambig_forms[i] = &this->ambig_forms_s128[i];
     }
     this->pow                  = &this->pow_s128;
     this->primorial_terms      = this->primorial_terms_s128;
@@ -197,12 +202,15 @@ void Spar::setup_discriminant(const unsigned int k) {
     this->initform             = &this->initform_mpz;
     this->search               = &this->search_mpz;
     this->current              = &this->current_mpz;
-    this->temp_form            = &this->temp_form_mpz;
     for (int i = 0; i < spar_random_form_count; i++) {
       this->random_forms[i] = &this->random_forms_mpz[i];
     }
     for (int i = 0; i < spar_hist_form_count; i++) {
       this->hist_forms[i] = &this->hist_forms_mpz[i];
+    }
+    for (int i = 0; i < spar_sylow_form_count; i++) {
+      this->sylow_forms[i] = &this->sylow_forms_mpz[i];
+      this->ambig_forms[i] = &this->ambig_forms_mpz[i];
     }
     this->pow                  = &this->pow_mpz;
     this->primorial_terms      = this->primorial_terms_s128;
@@ -213,6 +221,25 @@ void Spar::setup_discriminant(const unsigned int k) {
 
   this->logh = (logD + 1) / 2;
   if (this->logh < 1) this->logh = 1;
+}
+
+/**
+ * Find the next prime form for prime_index.
+ * init_form is the set to the new form.
+ * NOTE: Returns -1 on failure.
+ */
+int Spar::next_primeform(qform_t* form, int prime_index) {
+  prime_index = qform_next_primeform(qform_group, form, prime_index);
+  return prime_index;
+}
+
+/**
+ * Exponentiates initform by pow.
+ * Result is in initform.
+ */
+void Spar::exponentiation_stage() {
+  group_pow_factored23(this->pow, this->initform, this->initform,
+		       this->primorial_terms, this->primorial_term_count);
 }
 
 void Spar::setup_exponentiation_stage() {
@@ -240,14 +267,12 @@ void Spar::setup_exponentiation_stage() {
 
   int w = prime_index_ge(t);
   unsigned int pt = prime_list[w];
-  cout << "w=" << w << " prime=" << pt << endl;
 
   mpz_power_primorial(E, w, pt * pt);
   mpz_tdiv_q_2exp(E, E, mpz_scan1(E, 0));
 
   // Step count is what it would be if we used binary exponentiation.
   step_count = mpz_sizeinbase(E, 2) + mpz_popcount(E);
-  cout << "Step count = " << step_count << endl;
 
   // compute 2,3 representation of E
   cout << "Computing 2,3 representation for exponentiation stage." << endl;
@@ -270,19 +295,73 @@ void Spar::setup_search_stage() {
   }
 }
 
-/// d will be non-zero if this found a factor of N
-void Spar::repeatedly_square(qform_t* form) {
-  int i = 0;
-  while (i < logh) {
-    if (qform_group->is_ambiguous(qform_group, form))
+// If the corresponding ambiguous form is not already in sylow subgroup,
+// then add the form.
+void Spar::add_to_sylow(const qform_t* ambig_form,
+			const qform_t* form) {
+  for (int i = 0;
+       i < sylow_size && i < spar_sylow_form_count;
+       i++) {
+    if (group->equal(group, ambig_form, ambig_forms[i])) {
+      // It's in here, bail.
+      return;
+    }
+  }
+
+  // We didn't find the ambiguous form in the group, so add it.
+  int i = sylow_size % spar_sylow_form_count;
+  group->set(group, ambig_forms[i], ambig_form);
+  group->set(group, sylow_forms[i], form);
+  sylow_size++;
+
+  test_sylow();
+}
+
+// Tests the sylow subgroup, by composing all the forms in the group.
+// then repeatedly squaring and checking for a factor.
+// NOTE: trashes $search$
+void Spar::test_sylow() {
+  if (sylow_size == 0)
+    return;
+  group->set(group, search, sylow_forms[0]);
+  for (int i = 1; i < sylow_size && i < spar_sylow_form_count; i++) {
+    group->compose(group, search, search, sylow_forms[i]);
+  }
+
+  // Repeatedly square $search$ looking for an ambiguous form.
+  for (int i = 0; i < logh; i++) {
+    if (qform_group->is_ambiguous(qform_group, search))
       break;
-    group->square(group, form, form);
+    group->square(group, search, search);
     i++;
   }
 
-  if (qform_group->is_ambiguous(qform_group, form)) {
-    qform_group->split_ambiguous(qform_group, d, N, form);
+  if (qform_group->is_ambiguous(qform_group, search)) {
+    qform_group->split_ambiguous(qform_group, d, N, search);
+    if (mpz_cmp_ui(d, 0) != 0) {
+      cout << "Split N using the 2-Sylow group!" << endl;
+    }
   }
+}
+
+// d will be non-zero if this found a factor of N
+// NOTE: trashes $current$
+void Spar::repeatedly_square(qform_t* form) {
+  group->set(group, current, form);
+  int i = 0;
+  while (i < logh) {
+    if (qform_group->is_ambiguous(qform_group, current))
+      break;
+    group->square(group, current, current);
+    i++;
+  }
+
+  if (qform_group->is_ambiguous(qform_group, current)) {
+    if (!qform_group->split_ambiguous(qform_group, d, N, current)) {
+      add_to_sylow(current, form);
+    }
+  }
+  group->set(group, form, current);
 }
 
 /// True if form is in the history.  If the form is in the history,
@@ -341,10 +420,16 @@ uint32_t Spar::search_stage() {
 
 // The class group is determined, now we iterate on various prime ideals.
 void Spar::factor_using_group() {
-  int prime_index = 0;
+  int prime_index = -1;  // We always use +1
   order = 1;
+  sylow_size = 0;
+  int attempts = 0;
   while (prime_index < static_cast<int>(prime_list_count)) {
-    prime_index = next_primeform(initform, 0);
+    prime_index = next_primeform(initform, prime_index + 1);
+    if (prime_index == -1) {
+      // Ran out of prime forms.
+      break;
+    }
     exponentiation_stage();
     if (order > 1) {  // Exponentiate by known order
       qform_pow_u32(pow, initform, initform, order);
@@ -379,6 +464,11 @@ void Spar::factor_using_group() {
       // We can reuse the order.
       order *= new_order;
     }
+
+    attempts++;
+    //    if (attempts > 3) {
+    //      break;
+    //    }
   }
 }
 
@@ -418,9 +508,6 @@ bool Spar::factor(mpz_t d, const mpz_t N) {
       mpz_set(d, this->d);
       return true;
     }
-
-    // TODO: remove this line. for now we only want one execution.
-    //    return false;
   }
   return false;
 }

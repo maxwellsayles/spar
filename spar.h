@@ -18,6 +18,7 @@ extern "C" {
 #include "libsspar/open_addr_hash.h"
 }
 
+const int spar_sylow_form_count = 16;
 const int spar_random_form_count = 16;
 const int spar_hist_form_count = 7;
 
@@ -42,6 +43,8 @@ class Spar {
   void record_in_history(int steps_taken,
 			 const qform_t* form, const uint32_t exp);
   void repeatedly_square(qform_t* form);
+  void add_to_sylow(const qform_t* ambig_form, const qform_t* form);
+  void test_sylow();
   
   mpz_t N;   // Input to be factored.
   mpz_t d;   // divisor of N
@@ -58,39 +61,44 @@ class Spar {
   qform_t* initform;
   qform_t* search;
   qform_t* current;
-  qform_t* temp_form;
   qform_t* random_forms[spar_random_form_count];
   uint32_t random_exps[spar_random_form_count];
   qform_t* hist_forms[spar_hist_form_count];
   uint32_t hist_exps[spar_hist_form_count];
   int hist_size;
   double next_history;
+  qform_t* sylow_forms[spar_sylow_form_count];
+  qform_t* ambig_forms[spar_sylow_form_count];
+  int sylow_size;
 
   // Concrete group elements for each discriminant group.
   s64_qform_group_t qform_group_s64;
   s64_qform_t initform_s64;
   s64_qform_t search_s64;
-  s64_qform_t giant_s64;
   s64_qform_t current_s64;
-  s64_qform_t temp_form_s64;
+  s64_qform_t ambiguous_forms_s64;
   s64_qform_t random_forms_s64[spar_random_form_count];
   s64_qform_t hist_forms_s64[spar_hist_form_count];
+  s64_qform_t sylow_forms_s64[spar_sylow_form_count];
+  s64_qform_t ambig_forms_s64[spar_sylow_form_count];
   s128_qform_group_t qform_group_s128;
   s128_qform_t initform_s128;
   s128_qform_t search_s128;
-  s128_qform_t giant_s128;
   s128_qform_t current_s128;
-  s128_qform_t temp_form_s128;
+  s128_qform_t ambiguous_form_s128;
   s128_qform_t random_forms_s128[spar_random_form_count];
   s128_qform_t hist_forms_s128[spar_hist_form_count];
+  s128_qform_t sylow_forms_s128[spar_sylow_form_count];
+  s128_qform_t ambig_forms_s128[spar_sylow_form_count];
   mpz_qform_group_t qform_group_mpz;
   mpz_qform_t initform_mpz;
   mpz_qform_t search_mpz;
-  mpz_qform_t giant_mpz;
   mpz_qform_t current_mpz;
-  mpz_qform_t temp_form_mpz;
+  mpz_qform_t ambiguous_form_mpz;
   mpz_qform_t random_forms_mpz[spar_random_form_count];
   mpz_qform_t hist_forms_mpz[spar_hist_form_count];
+  mpz_qform_t sylow_forms_mpz[spar_sylow_form_count];
+  mpz_qform_t ambig_forms_mpz[spar_sylow_form_count];
 
   // Powering
   group_pow_t* pow;  // Polymorphic
