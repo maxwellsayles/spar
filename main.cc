@@ -7,10 +7,17 @@
 using namespace std;
 
 int main(int argc, char** argv) {
+  if (argc == 1) {
+    cout << "Usage: " << argv[0] << " <integer>" << endl;
+    return 0;
+  }
   mpz_t N;
   mpz_t d;
-  //  mpz_init_set_str(N, "4722366490463147393501", 10);
-  mpz_init_set_str(N, "4722366490463147392334297", 10);
+  // This number failed to factor! 173183113735791113
+
+  //mpz_init_set_str(N, "4722366490463147393501", 10);
+  //  mpz_init_set_str(N, "4722366490463147392334297", 10);
+  mpz_init_set_str(N, argv[1], 10);
   mpz_init(d);
 
   Spar spar;

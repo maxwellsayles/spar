@@ -19,6 +19,7 @@ extern "C" {
 }
 
 const int spar_random_form_count = 16;
+const int spar_hist_form_count = 7;
 
 /**
  * The structure that maintains the data for the SuperSPAR algorithm.
@@ -36,6 +37,10 @@ class Spar {
   int next_primeform(qform_t* form, int prime_index);
   void factor_using_group();
   void exponentiation_stage();
+  uint32_t search_stage();
+  bool in_history(uint32_t* out_exp, const qform_t* form);
+  void record_in_history(int steps_taken,
+			 const qform_t* form, const uint32_t exp);
   void repeatedly_square(qform_t* form);
   
   mpz_t N;   // Input to be factored.
@@ -56,6 +61,10 @@ class Spar {
   qform_t* temp_form;
   qform_t* random_forms[spar_random_form_count];
   uint32_t random_exps[spar_random_form_count];
+  qform_t* hist_forms[spar_hist_form_count];
+  uint32_t hist_exps[spar_hist_form_count];
+  int hist_size;
+  double next_history;
 
   // Concrete group elements for each discriminant group.
   s64_qform_group_t qform_group_s64;
@@ -65,6 +74,7 @@ class Spar {
   s64_qform_t current_s64;
   s64_qform_t temp_form_s64;
   s64_qform_t random_forms_s64[spar_random_form_count];
+  s64_qform_t hist_forms_s64[spar_hist_form_count];
   s128_qform_group_t qform_group_s128;
   s128_qform_t initform_s128;
   s128_qform_t search_s128;
@@ -72,6 +82,7 @@ class Spar {
   s128_qform_t current_s128;
   s128_qform_t temp_form_s128;
   s128_qform_t random_forms_s128[spar_random_form_count];
+  s128_qform_t hist_forms_s128[spar_hist_form_count];
   mpz_qform_group_t qform_group_mpz;
   mpz_qform_t initform_mpz;
   mpz_qform_t search_mpz;
@@ -79,6 +90,7 @@ class Spar {
   mpz_qform_t current_mpz;
   mpz_qform_t temp_form_mpz;
   mpz_qform_t random_forms_mpz[spar_random_form_count];
+  mpz_qform_t hist_forms_mpz[spar_hist_form_count];
 
   // Powering
   group_pow_t* pow;  // Polymorphic
